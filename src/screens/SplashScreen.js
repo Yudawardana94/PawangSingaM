@@ -14,7 +14,7 @@ const SplashScreen = props => {
   return (
     <View style={styles.container}>
       <View>
-        <Text>PawangSinga</Text>
+        <Text>Pawang Singa</Text>
         <Text>SplashScreen</Text>
       </View>
     </View>
