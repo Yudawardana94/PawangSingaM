@@ -102,7 +102,7 @@ const Home = props => {
       <Pressable
         onPress={() => console.log('hellow orls')}
         onLongPress={() => console.log('lama banget kak mencetnya')}>
-        <Text>pencet aku kak</Text>
+        <Text>pencet aku</Text>
       </Pressable>
     </View>
   );
