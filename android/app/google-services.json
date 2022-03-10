@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "475671540464",
+    "project_id": "pawangsinga-4572c",
+    "storage_bucket": "pawangsinga-4572c.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:475671540464:android:b399e49bf3bccb24e9c835",
+        "android_client_info": {
+          "package_name": "com.samsaak.pawangsinga"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "475671540464-k3td8uhge9dsl6d5kqs2gbjs7ui7uphk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCDQ00fMNU6ui7l0DVbXYvEzXQMWo6-JPE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "475671540464-k3td8uhge9dsl6d5kqs2gbjs7ui7uphk.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

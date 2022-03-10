@@ -28,6 +28,7 @@ const Home = props => {
   useEffect(() => {
     // readDB();
     // writeFSDB();
+    readFSDB('Users');
     fetchData();
   }, []);
 
