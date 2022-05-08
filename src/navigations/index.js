@@ -22,10 +22,22 @@ const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
 
 //import screen
+// import SplashScreen from '../screens/SplashScreen';
+// import RegisterScreen from '../screens/RegisterScreen';
+
+// Home screen member
 import HomeScreen from '../screens/Home';
-import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import DetailRestaurantScreen from '../screens/DetailRestaurantScreen';
+import RestaurantsScreen from '../screens/RestaurantsScreen';
+import SearchScreen from '../screens/SearchScreen';
+import WishlistScreen from '../screens/WishlistScreen';
+
+// random screen member
+import RandomScreen from '../screens/RandomScreen';
+
+//setting screen member
+import ProfileScreen from '../screens/ProfileScreen';
 
 const MyTabBar = ({ state, descriptors, navigation }) => {
   return (
@@ -80,6 +92,41 @@ const MyTabBar = ({ state, descriptors, navigation }) => {
   );
 }
 
+const HomeTab = () => {
+  return (
+    <Stack.Navigator
+        initialRouteName={'Home'} // TODO: change it to Login Screen
+        screenOptions={{
+          headerShown: false,
+        }}>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Login" component={LoginScreen} />
+        <Stack.Screen name="DetailRestaurant" component={DetailRestaurantScreen} />
+        <Stack.Screen name="Restaurants" component={RestaurantsScreen} />
+        <Stack.Screen name="Search" component={SearchScreen} />
+        <Stack.Screen name="Wishlist" component={WishlistScreen} />
+      </Stack.Navigator>
+  )
+}
+
+const RandomTab = () => {
+  return (
+    <Stack.Navigator
+    initialRouteName={'Random'}>
+      <Stack.Screen name="Random" component={RandomScreen} />
+    </Stack.Navigator>
+  )
+}
+
+const SettingTab = () => {
+  return (
+    <Stack.Navigator
+    initialRouteName={'Profile'}>
+      <Stack.Screen name="Profile" component={ProfileScreen} />
+    </Stack.Navigator>
+  )
+}
+
 const Navigation = () => {
   return (
     <NavigationContainer>
@@ -90,7 +137,7 @@ const Navigation = () => {
         >
         <Tab.Screen 
           name="Home"
-          component={HomeScreen} 
+          component={HomeTab} 
           options={{
             tabBarLabelPosition: 'below-icon',
             tabBarIcon: ({focused, size}) => focused ? <Icon name="home" size={size} color="#4F8EF7" /> : <Icon name="home-outline" size={size} color="#4F8EF7" />
@@ -98,13 +145,9 @@ const Navigation = () => {
         />
         <Tab.Screen 
           name="Random" 
-          component={LoginScreen} 
+          component={RandomTab} 
           options={{
             tabBarLabelPosition: 'below-icon',
-            tabBarIconStyle:{
-              backgroundColor: "skyblue",
-              zIndex: 99
-            },
             tabBarIcon: ({focused, size}) => {
               return focused ? <Icon5 name="dice-d20" size={size+5} color="#4F8EF7" /> : <Icon5 name="dice-d6" size={size} color="#4F8EF7" />
             }
@@ -112,7 +155,7 @@ const Navigation = () => {
         />
         <Tab.Screen 
           name="Settings" 
-          component={LoginScreen} 
+          component={SettingTab} 
           options={{
             tabBarLabelPosition: 'below-icon',
             tabBarActiveTintColor: 'salmon',
@@ -120,16 +163,6 @@ const Navigation = () => {
           }}
         />
       </Tab.Navigator>
-      {/* <Stack.Navigator
-        initialRouteName={'SplashScreen'}
-        screenOptions={{
-          headerShown: false,
-        }}>
-        <Stack.Screen name="SplashScreen" component={SplashScreen} />
-        <Stack.Screen name="Home" component={HomeScreen} />
-        <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="Register" component={RegisterScreen} />
-      </Stack.Navigator> */}
     </NavigationContainer>
   );
 };

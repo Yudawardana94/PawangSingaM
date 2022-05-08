@@ -6,6 +6,7 @@ export const getRestaurants = async () => {
         const restaurants = await axios.get(`${getBaseUrl()}/r/pawangSinga/rst`)
         return restaurants.data.data
     } catch (error) {
+        console.log(error, "--error")
         return []
     }
 }
@@ -15,6 +16,7 @@ export const getRandom = async () => {
         const randomRes = await axios.get(`${getBaseUrl()}/r/pawangSinga/rst/random`)
         return randomRes.data.data[0]
     } catch (error) {
+        console.log(error, "--error")
         return {}
     }
 }

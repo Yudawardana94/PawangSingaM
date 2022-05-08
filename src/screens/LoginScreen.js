@@ -3,8 +3,6 @@ import {Button, StyleSheet, Text, View} from 'react-native';
 import {connect} from 'react-redux';
 
 const LoginScreen = props => {
-  useEffect(() => {
-  }, []);
   return (
     <View>
       <Text>{props.appsTitle}</Text>
