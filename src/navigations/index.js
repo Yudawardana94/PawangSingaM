@@ -2,9 +2,24 @@ import 'react-native-gesture-handler';
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs'
+import Icon from 'react-native-vector-icons/Ionicons'
+import Icon5 from 'react-native-vector-icons/FontAwesome5'
+import IconI from 'react-native-vector-icons/Ionicons'
+import { View, Text, TouchableOpacity } from 'react-native';
+
+/**
+ * TODO: 
+ * - make stack navigation to each of bottom tab bar
+ * - custom middle icon to be bigger and overflowing ( using myTabBar to customize it)
+ *  - https://www.youtube.com/watch?v=I3tkxxoA8Sg
+ *  - https://reactnavigation.org/docs/bottom-tab-navigator/#tabbar
+ *  - clean code by separating each stack and screen 
+ */
 
 //init call functions
 const Stack = createNativeStackNavigator();
+const Tab = createBottomTabNavigator();
 
 //import screen
 import HomeScreen from '../screens/Home';
@@ -12,10 +27,100 @@ import SplashScreen from '../screens/SplashScreen';
 import LoginScreen from '../screens/LoginScreen';
 import RegisterScreen from '../screens/RegisterScreen';
 
+const MyTabBar = ({ state, descriptors, navigation }) => {
+  return (
+    <View style={{ flexDirection: 'row' }}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label =
+          options.tabBarLabel !== undefined
+            ? options.tabBarLabel
+            : options.title !== undefined
+            ? options.title
+            : route.name;
+
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate({ name: route.name, merge: true });
+          }
+        };
+
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
+        };
+
+        return (
+          <TouchableOpacity
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            onLongPress={onLongPress}
+            style={{ flex: 1, alignItems: "center", height: 72, justifyContent:'flex-end', paddingBottom: 24 }}
+          >
+            <Text style={{ color: isFocused ? '#673ab7' : '#222' }}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+}
+
 const Navigation = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator
+      <Tab.Navigator screenOptions={{
+          headerShown: false,
+        }} 
+        // tabBar={props => <MyTabBar {...props} />}
+        >
+        <Tab.Screen 
+          name="Home"
+          component={HomeScreen} 
+          options={{
+            tabBarLabelPosition: 'below-icon',
+            tabBarIcon: ({focused, size}) => focused ? <Icon name="home" size={size} color="#4F8EF7" /> : <Icon name="home-outline" size={size} color="#4F8EF7" />
+          }}
+        />
+        <Tab.Screen 
+          name="Random" 
+          component={LoginScreen} 
+          options={{
+            tabBarLabelPosition: 'below-icon',
+            tabBarIconStyle:{
+              backgroundColor: "skyblue",
+              zIndex: 99
+            },
+            tabBarIcon: ({focused, size}) => {
+              return focused ? <Icon5 name="dice-d20" size={size+5} color="#4F8EF7" /> : <Icon5 name="dice-d6" size={size} color="#4F8EF7" />
+            }
+          }}
+        />
+        <Tab.Screen 
+          name="Settings" 
+          component={LoginScreen} 
+          options={{
+            tabBarLabelPosition: 'below-icon',
+            tabBarActiveTintColor: 'salmon',
+            tabBarIcon: ({focused, size}) => focused ? <IconI name="settings" size={size} color="#4F8EF7" /> : <IconI name="settings-outline" size={size} color="#4F8EF7" />
+          }}
+        />
+      </Tab.Navigator>
+      {/* <Stack.Navigator
         initialRouteName={'SplashScreen'}
         screenOptions={{
           headerShown: false,
@@ -24,7 +129,7 @@ const Navigation = () => {
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
         <Stack.Screen name="Register" component={RegisterScreen} />
-      </Stack.Navigator>
+      </Stack.Navigator> */}
     </NavigationContainer>
   );
 };

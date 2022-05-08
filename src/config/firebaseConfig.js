@@ -5,7 +5,6 @@ import firestore from '@react-native-firebase/firestore';
 // const defaultDB = 'https://ohmyproject-2020.firebaseio.com/';
 
 export const readDB = param => {
-  console.log(param, 'ini param');
   // firebase
   //   .app()
   //   .database()
@@ -27,17 +26,15 @@ export const readDB = param => {
 };
 
 export const readFSDB = async param => {
-  console.log(param, 'ini paramnya');
   try {
-    const resultList = await firestore().collection(param).get();
-    return resultList._docs;
+    // const resultList = await firestore().collection(param).get();
+    // return resultList._docs;
   } catch (error) {
     console.log(error, 'ada error disini');
   }
 };
 
 export const writeFSDB = param => {
-  console.log(param, 'ini paramnya');
   firestore()
     .collection('Users')
     .add({

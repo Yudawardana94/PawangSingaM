@@ -5,16 +5,17 @@ import {
   View,
   SafeAreaView,
   Pressable,
+  ScrollView,
   Touchable,
   Switch,
 } from 'react-native';
-import {TouchableOpacity} from 'react-native-gesture-handler';
 import {connect} from 'react-redux';
 
-import {readDB, writeFSDB, readFSDB} from '../config/firebaseConfig';
+import {getRestaurants, getRandom} from '../services/RestaurantService'
+
 
 const Home = props => {
-  const [homeText, setHomeText] = useState({
+  const homeText = {
     title: 'Let`s Eat',
     subtitle: 'Whats to eat today ?',
     hero: [
@@ -22,18 +23,20 @@ const Home = props => {
       'Get random recomendation right now',
       'Klik here',
     ],
-  });
-  const [fetchedData, setFetchData] = useState({});
+  };
+  const [resData, setResData] = useState(null);
+  const [randomRes, setRandomRes] = useState(null);
 
   useEffect(() => {
-    // readDB();
-    // writeFSDB();
-    readFSDB('Users');
     fetchData();
   }, []);
 
   const fetchData = async () => {
     try {
+      const restaurants = await getRestaurants()
+      const random = await getRandom()
+      setResData(restaurants)
+      setRandomRes(random)
     } catch (error) {
       console.log('error', error);
     }
@@ -66,9 +69,10 @@ const Home = props => {
   const renderContent = () => {
     return (
       <View>
-        {renderNewContent()}
-        {renderRecomended()}
-        {renderUserFavourite()}
+        {/* {renderNewContent()} */}
+        {randomRes && renderRecomended()}
+        {/* {renderUserFavourite()} */}
+        {resData && renderRestaurant()}
       </View>
     );
   };
@@ -83,6 +87,7 @@ const Home = props => {
     return (
       <View style={styles.recommended}>
         <Text>Recommended</Text>
+        <Text>{randomRes?.Name}</Text>
       </View>
     );
   };
@@ -93,18 +98,34 @@ const Home = props => {
       </View>
     );
   };
+  const renderRestaurant = () => {
+    return (
+      <View>
+        {
+          resData?.map(el => {
+            return <View style={{
+              marginVertical: 8,
+              backgroundColor: "white",
+              padding: 4
+            }} key={el._id}>
+              {/* <Text>{JSON.stringify(Object.keys(el))}</Text> */}
+              <Text>{el.Name}</Text>
+              <Text>{el.Address}</Text>
+            </View>
+          })
+        }
+      </View>
+    )
+  }
 
   return (
     <View style={styles.container}>
       <SafeAreaView forceInset={{top: 'always'}} />
-      {renderHeader()}
-      {renderHero()}
-      {renderContent()}
-      <Pressable
-        onPress={() => console.log('hellow orls')}
-        onLongPress={() => console.log('lama banget kak mencetnya')}>
-        <Text>pencet aku</Text>
-      </Pressable>
+      <ScrollView>
+        {renderHeader()}
+        {renderHero()}
+        {renderContent()}
+      </ScrollView>
     </View>
   );
 };
