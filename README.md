@@ -14,3 +14,5 @@ Pawang singa mobile apps
  - Write wishlist 
  - Comment on Restaurant
  - Add new Restaurant
+ 
+ ## check some readme
