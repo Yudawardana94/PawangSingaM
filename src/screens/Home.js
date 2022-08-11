@@ -14,6 +14,7 @@ import {connect} from 'react-redux';
 import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
+import {colors} from '../config/globalValue'
 import {getRestaurants, getRandom} from '../services/RestaurantService'
 
 
@@ -103,18 +104,23 @@ const Home = props => {
     const menu = [{
       title: "Random",
       screenName: "Random",
-      screenProps: {}
+      icon: "random",
+      screenProps: {},
+
     },{
       title: "Restaurants",
       screenName: "Restaurants",
+      icon: "building",
       screenProps: {}
     },{
       title: "Wishlist",
       screenName: "Wishlist",
+      icon: "heart",
       screenProps: {}
     },{
       title: "Search",
       screenName: "Search",
+      icon: "search",
       screenProps: {}
     },]
     return <View style={{
@@ -126,23 +132,27 @@ const Home = props => {
       {
         menu.map(menu => {
           return <Pressable style={{
-            // backgroundColor: "white",
             marginRight: 8,
             borderRadius: 6,
             padding: 6, 
             width: "20%",
             alignItems: 'center'
-          }} onPress={() => onNavigateScreen(menu.screenName, menu.screenProps)}>
-            <View style={{
-              backgroundColor: "tomato",
-              height: 40,
-              width: 40,
-              borderRadius: 4,
-              marginBottom: 4,
+          }} 
+          onPress={() => onNavigateScreen(menu.screenName, menu.screenProps)} 
+          key={Math.random()}
+          hitSlop={{
+            top: 8,
+            bottom: 8,
+            left: 8,
+            right: 8
+          }}>
+            <Icon name={menu.icon} size={30} style={{
+              marginBottom: 8,
             }}/>
             <Text style={{
               textAlign: 'center',
               flexGrow: 1,
+              fontSize: 11,
             }}>{menu.title}</Text>
           </Pressable>
         })
@@ -165,15 +175,28 @@ const Home = props => {
         }}>
           {
             resData?.map(wl => {
-              return <View style={{
-                backgroundColor: "white",
-                marginRight: 8,
-                borderRadius: 4,
-                width: 125
-              }}>
+              return <Pressable 
+                style={{
+                  backgroundColor: colors.card,
+                  marginRight: 8,
+                  borderRadius: 4,
+                  width: 125
+                }}
+                key={Math.random()}
+                onPress={() => {
+                  console.log({...wl, Photos: [...wl.Photos, defaultImage]})
+                  // props.navigation.navigate("DetailRestaurant", wl) // this is the main used data
+                  props.navigation.navigate("DetailRestaurant", {...wl, Photos: [...wl.Photos, defaultImage]}) //this is customized data
+                }}
+              >
                 <FastImage
-                    style={{ width: 125, height: 75, borderTopLeftRadius: 4,
-                      borderTopRightRadius: 4, }}
+                    style={{ 
+                      width: 125, 
+                      height: 75, 
+                      borderTopLeftRadius: 4,
+                      borderTopRightRadius: 4, 
+                      justifyContent: 'flex-end',
+                    }}
                     source={{
                         uri: defaultImage,
                         priority: FastImage.priority.normal,
@@ -182,9 +205,11 @@ const Home = props => {
                 />
                 <Text style={{
                   padding: 4,
-                  fontSize: 12
+                  fontSize: 12,
+                  fontWeight: "bold",
+                  textTransform: 'capitalize'
                 }}>{wl.Name}</Text>
-              </View>
+              </Pressable>
             })
           }
         </ScrollView>
@@ -202,12 +227,12 @@ const Home = props => {
             <View style={styles.typeWrapper}>
               {
                 [randomRes?.Type, "apakah", "semua","telah",'berakhir','sudahhh','dan','membuatku','menjadi'].map((type, idx) => {
-                  return idx <= 4 ? <View style={styles.randomResType}>
+                  return idx <= 4 ? <View style={styles.randomResType} key={Math.random()}>
                   <Text style={{
                     fontSize: 12,
                     textTransform: 'capitalize'
                   }}>{type}</Text>
-                </View>: null
+                </View> : null
                 })
               }
             </View>
@@ -244,14 +269,18 @@ const Home = props => {
       <View>
         {
           resData?.map(el => {
-            return <View style={{
-              marginVertical: 8,
-              backgroundColor: "white",
-              padding: 4
-            }} key={el._id}>
-              <Text>{el.Name}</Text>
-              <Text>{el.Address}</Text>
-            </View>
+            return (
+              <View style={{
+                  marginVertical: 8,
+                  backgroundColor: "white",
+                  padding: 4
+                }} 
+                key={el._id}
+              >
+                <Text>{el.Name}</Text>
+                <Text>{el.Address}</Text>
+              </View>
+            )
           })
         }
       </View>
@@ -273,7 +302,7 @@ const Home = props => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fffcf9',
+    backgroundColor: colors.primaryBackground,
     paddingHorizontal: 8,
   },
   heroHeader: {
@@ -291,10 +320,11 @@ const styles = StyleSheet.create({
   },
   //Recomendation Section 
   recommended: {
-    backgroundColor: "white",
+    backgroundColor: colors.card,
     borderRadius: 4,
     minHeight: 50,
-    padding: 8
+    padding: 8,
+    marginVertical: 8,
   },
   recTitle: {
     marginBottom: 6,

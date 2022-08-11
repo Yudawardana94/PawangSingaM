@@ -95,13 +95,13 @@ const MyTabBar = ({ state, descriptors, navigation }) => {
 const HomeTab = () => {
   return (
     <Stack.Navigator
-        initialRouteName={'Home'} // TODO: change it to Login Screen
+        initialRouteName={'Landing'} // TODO: change it to Login Screen
         screenOptions={{
           headerShown: false,
         }}>
-        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Landing" component={HomeScreen} />
         <Stack.Screen name="Login" component={LoginScreen} />
-        <Stack.Screen name="DetailRestaurant" component={DetailRestaurantScreen} />
+        <Stack.Screen name="DetailRestaurant" component={DetailRestaurantScreen}/>
         <Stack.Screen name="Restaurants" component={RestaurantsScreen} />
         <Stack.Screen name="Search" component={SearchScreen} />
         <Stack.Screen name="Wishlist" component={WishlistScreen} />
@@ -112,8 +112,8 @@ const HomeTab = () => {
 const RandomTab = () => {
   return (
     <Stack.Navigator
-    initialRouteName={'Random'}>
-      <Stack.Screen name="Random" component={RandomScreen} />
+    initialRouteName={'Shuffle'}>
+      <Stack.Screen name="Shuffle" component={RandomScreen} options={{headerShown: false}}/>
     </Stack.Navigator>
   )
 }
