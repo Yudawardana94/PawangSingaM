@@ -157,7 +157,6 @@ class WheelOfFortune extends Component {
         finished: true,
         winner: this._wheelPaths[winnerIndex].value,
       });
-      console.log(this.props)
       this.props.options.getWinner(this._wheelPaths[winnerIndex].value, winnerIndex);
     });
   };

@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import { Button, View, ScrollView, Text, TextInput, SafeAreaView, StyleSheet, TouchableOpacity } from 'react-native'
 import Icon from 'react-native-vector-icons/Ionicons'
 import knoob from '../assets/images/knob.png'
@@ -19,19 +19,19 @@ const RandomScreen = () => {
   const [itemPools, setItemPools] = useState([]);
   const [randomResult, setResult] = useState("");
   const [showResult, setShowResult] = useState(false)
-  const [winner, setWinner] = useState({})
+  const [winner, setWinner] = useState(null)
 
-  let childRef = null
+  let childRef = useRef(null)
 
   const participants = [
-    '%10',
-    '%20',
-    '%30',
-    '%40',
-    '%50',
-    '%60',
-    '%70',
-    '%90',
+    '10%',
+    '20%',
+    '30%',
+    '40%',
+    '50%',
+    '60%',
+    '70%',
+    '90%',
     'FREE',
   ];
   const wheelOptions = {
@@ -66,11 +66,15 @@ const RandomScreen = () => {
   }
 
   const onShuffle = () => {
-    const choosenIndex = (Math.random()*itemPools.length).toFixed(0)
-    console.log(choosenIndex, itemPools[choosenIndex], "===choosen index")
-    setTimeout(() => {
-      setResult(itemPools[choosenIndex])
-    }, 1500);
+    // const choosenIndex = (Math.random()*itemPools.length).toFixed(0)
+    // console.log(choosenIndex, itemPools[choosenIndex], "===choosen index")
+    // setTimeout(() => {
+    //   setResult(itemPools[choosenIndex])
+    // }, 1500);
+      childRef.prepareWheel();
+      childRef.resetWheelState();
+      childRef.angleListener();
+      childRef._onPress()
   }
 
   const onItemRemoved = (position) => {
@@ -107,7 +111,7 @@ const RandomScreen = () => {
       padding: 8,
       marginTop: 6,
     }}>
-      <Text>{randomResult}</Text>
+      <Text>{winner?.winnerValue}</Text>
     </View>
   }
 
@@ -199,9 +203,7 @@ const RandomScreen = () => {
         }}>Shuffle</Text>
       </TouchableOpacity>
       <WheelOfFortune options={wheelOptions} ref={ref => (childRef = ref)}/>
-      <Button title="Press me" onPress={ () => { 
-        childRef._onPress()
-       } } />
+      <Button title="Shuffle" onPress={onShuffle} />
     </View>
   )
 }
