@@ -172,7 +172,7 @@ class WheelOfFortune extends Component {
       fontSize={this.fontSize}>
       {Array.from({length: number.length}).map((_, j) => {
         // Render reward text vertically
-        if (this.props.options.textAngle === 'vertical') {
+        if (this.props.options.textAngle !== 'vertical') {
           return (
             <TSpan x={x} dy={this.fontSize} key={`arc-${i}-slice-${j}`}>
               {number.charAt(j)}
@@ -191,6 +191,22 @@ class WheelOfFortune extends Component {
           );
         }
       })}
+    </Text>
+  );
+  
+  _textRender2 = (x, y, number, i) => (
+    <Text
+      x={x - 10}
+      y={y - 20}
+      fill={
+        this.props.options.textColor ? this.props.options.textColor : '#fff'
+      }
+      textAnchor="middle"
+      // style={{transform: [{rotate: '90deg'}]}}
+      // transform={[{ rotate: '180deg' }]}
+      fontWeight={'bold'}
+      fontSize={24}>
+      {number}
     </Text>
   );
 
@@ -239,19 +255,28 @@ class WheelOfFortune extends Component {
             <G y={width / 2} x={width / 2}>
               {this._wheelPaths.map((arc, i) => {
                 const [x, y] = arc.centroid;
+                console.log(x.toFixed(0),y.toFixed(0))
+                // const number = i.toString();
                 const number = arc.value.toString();
-
+                // console.log(arc, i, '--ini apanya ya ?')
+                // console.log('----',(i * this.oneTurn) / this.numberOfSegments +this.angleOffset,'------ ya iniii')
+                // console.log('----', i, this.oneTurn, this.numberOfSegments ,this.angleOffset ,'------ ya iniii')
                 return (
-                  <G key={`arc-${i}`}>
+                  <G key={`arc-${i}`} style={{transform: [{rotate: '90deg'}]}} transform={[{rotate: '90deg'}]}>
                     <Path d={arc.path} strokeWidth={2} fill={arc.color} />
-                    <G
-                      rotation={
-                        (i * this.oneTurn) / this.numberOfSegments +
-                        this.angleOffset
-                      }
-                      origin={`${x}, ${y}`}>
-                      {this._textRender(x, y, number, i)}
-                    </G>
+                    {/* <G
+                      zIndex={20}
+                      // rotation={
+                        // (i * this.oneTurn) / this.numberOfSegments +
+                        // this.angleOffset
+                        // 20 + (40*i)
+                        // 20
+                      // }
+                      style={{transform: [{rotate: '90deg'}]}}
+                      // transform={[{ rotate: '180deg' }]}
+                      origin={`${0}, ${0}`}>
+                    </G> */}
+                      {this._textRender2(x, y, number, i)}
                   </G>
                 );
               })}

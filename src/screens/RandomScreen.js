@@ -3,8 +3,8 @@ import { Button, View, ScrollView, Text, TextInput, SafeAreaView, StyleSheet, To
 import Icon from 'react-native-vector-icons/Ionicons'
 import knoob from '../assets/images/knob.png'
 
-// import WheelOfFortune from 'react-native-wheel-of-fortune'
 import WheelOfFortune from './Library/WheelOfFortune.js'
+import PlainModalWIthCloseButton from'../components/Modal/PlainModalWIthCloseButton'
 
 
 /**
@@ -18,10 +18,14 @@ const RandomScreen = () => {
   const [itemInput, setItemInput] = useState(''); 
   const [itemPools, setItemPools] = useState([]);
   const [randomResult, setResult] = useState("");
-  const [showResult, setShowResult] = useState(false)
-  const [winner, setWinner] = useState(null)
+  // const [showResult, setShowResult] = useState(false);
+  const [winner, setWinner] = useState(null);
+  const [modalVisibility, setModalVisibility] = useState(false);
+  const [modalData, setModalData] = useState(null);
+  const [showWheelVisible, setWheelVisible] = useState(true)
 
   let childRef = useRef(null)
+  let textInputRef = useRef(null)
 
   const participants = [
     '10%',
@@ -29,13 +33,9 @@ const RandomScreen = () => {
     '30%',
     '40%',
     '50%',
-    '60%',
-    '70%',
-    '90%',
-    'FREE',
   ];
   const wheelOptions = {
-    rewards: participants,
+    rewards: itemPools,
     knobSize: 50,
     borderWidth: 5,
     borderColor: '#000',
@@ -46,7 +46,10 @@ const RandomScreen = () => {
     knobSource: knoob,
     getWinner: (value, index) => {
       setWinner({winnerValue: value, winnerIndex: index})
-      console.log(value, index, "---hasil value dan indexnya")
+      setModalData({
+        winner: value,
+      })
+      setModalVisibility(true)
     },
     onRef: ref => childRef = ref
   };
@@ -55,6 +58,7 @@ const RandomScreen = () => {
     setResult("this is result text, changeable to lottie dice")
   }, [])
   const onItemAdded = () => {
+    if(itemPools.length >= 5) return false
     if(!itemPools.includes(itemInput) && itemInput !== "") {
       const newPools = [itemInput, ...itemPools]
       setItemPools(newPools)
@@ -63,18 +67,18 @@ const RandomScreen = () => {
       // tampilkan toast kalau item dengan nama yang sama sudah di tambahkan
       setItemInput("")
     }
+    setWheelVisible(false);
+    textInputRef.focus();
   }
 
+  const toggleModal = () => setModalVisibility(false)
+
   const onShuffle = () => {
-    // const choosenIndex = (Math.random()*itemPools.length).toFixed(0)
-    // console.log(choosenIndex, itemPools[choosenIndex], "===choosen index")
-    // setTimeout(() => {
-    //   setResult(itemPools[choosenIndex])
-    // }, 1500);
-      childRef.prepareWheel();
-      childRef.resetWheelState();
-      childRef.angleListener();
-      childRef._onPress()
+    setWheelVisible(true);
+    childRef.prepareWheel();
+    childRef.resetWheelState();
+    childRef.angleListener();
+    childRef._onPress()
   }
 
   const onItemRemoved = (position) => {
@@ -96,7 +100,7 @@ const RandomScreen = () => {
       }}>
         <Text style={{
           fontSize: 16,
-          fontWeight: "bold"
+          fontWeight: "bold",
         }}>Terserah</Text>
         <Text style={{
           textAlign: 'center'
@@ -138,7 +142,6 @@ const RandomScreen = () => {
     <View style={styles.container}>
       <SafeAreaView />
       <Header />
-      <Result />
       <View style={{
         flexDirection: 'row',
         alignItems: 'center',
@@ -157,11 +160,15 @@ const RandomScreen = () => {
             marginTop: 6,
           }}
           onChangeText={value => setItemInput(value)}
-          onEndEditing={onItemAdded}
+          // onEndEditing={onItemAdded}
+          onSubmitEditing={onItemAdded}
           value={itemInput}
           autoCapitalize={"none"}
           autoCorrect={false}
-          placeholder="Input restaurant name here"
+          editable={itemPools.length < 5}
+          ref={ref => textInputRef = ref}
+          blurOnSubmit={false}
+          placeholder={itemPools.length < 5 ? "Input restaurant name here" : "Maximum option reached"}
         />
         <TouchableOpacity onPress={onItemAdded} style={{paddingTop: 4}}>
           <Icon name="send" size={24} color="blue"/>
@@ -174,20 +181,21 @@ const RandomScreen = () => {
       }}>
         <Text>reset</Text>
       </TouchableOpacity>
-      {itemPools.length > 0 && <ScrollView 
-      showsVerticalScrollIndicator={false}
-        style={{
-          backgroundColor: "gray",
-          marginHorizontal: 8,
-          maxHeight: '40%',
-          borderRadius: 4
-        }}>
-        {
-          itemPools.map((item, idx)  => {
-            return <RandomItem key={Math.random()} data={item} position={idx}/>
-          })
-        }
-      </ScrollView>}
+      <View>
+        {itemPools.length > 0 && !showWheelVisible && <ScrollView 
+        showsVerticalScrollIndicator={false}
+          style={{
+            backgroundColor: "tomato",
+            marginHorizontal: 8,
+            borderRadius: 4,
+          }}>
+          {
+            itemPools.map((item, idx)  => {
+              return <RandomItem key={Math.random()} data={item} position={idx}/>
+            })
+          }
+        </ScrollView>}
+      </View>
       <TouchableOpacity style={{
         backgroundColor: "steelblue",
         alignItems: 'center',
@@ -203,7 +211,7 @@ const RandomScreen = () => {
         }}>Shuffle</Text>
       </TouchableOpacity>
       <WheelOfFortune options={wheelOptions} ref={ref => (childRef = ref)}/>
-      <Button title="Shuffle" onPress={onShuffle} />
+      <PlainModalWIthCloseButton modalVisible={modalVisibility} toggleModal={toggleModal} data={modalData}/>
     </View>
   )
 }
