@@ -96,7 +96,8 @@ const RandomScreen = () => {
   const Header = () => {
     return (
       <View style={{
-        alignItems: 'center'
+        alignItems: 'center',
+        marginVertical: 16,
       }}>
         <Text style={{
           fontSize: 16,
@@ -126,13 +127,18 @@ const RandomScreen = () => {
         alignItems: 'center',
         justifyContent: 'space-between',
         marginHorizontal: 16,
-        marginVertical: 8,
+        marginVertical: 4,
       }}>
         <Text style={{
           textTransform: 'capitalize'
         }}>{data}</Text>
-        <TouchableOpacity onPress={() => onItemRemoved(position)}>
-          <Icon name="ios-remove-circle-sharp" size={24} color="crimson"/>
+        <TouchableOpacity onPress={() => onItemRemoved(position)} hitSlop={{
+            bottom: 0,
+            left: 12,
+            right: 12,
+            top: 0
+        }}>
+          <Icon name="ios-remove-circle-sharp" size={20} color="crimson"/>
         </TouchableOpacity>
       </View>
     )
@@ -146,18 +152,19 @@ const RandomScreen = () => {
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
-        paddingRight: 12,
+        marginBottom: 16,
       }}>
+        <TouchableOpacity onPress={onReset}>
+          <Icon name="refresh-outline" size={24} color="crimson"/>
+        </TouchableOpacity>
         <TextInput 
           style={{
             borderRadius: 4,
             borderWidth: 1,
             borderColor: "darkgray",
-            padding: 4,
             paddingHorizontal: 8,
-            width: "90%",
-            height: 48,
-            marginTop: 6,
+            minWidth: "80%",
+            height: 36,
           }}
           onChangeText={value => setItemInput(value)}
           // onEndEditing={onItemAdded}
@@ -170,24 +177,21 @@ const RandomScreen = () => {
           blurOnSubmit={false}
           placeholder={itemPools.length < 5 ? "Input restaurant name here" : "Maximum option reached"}
         />
-        <TouchableOpacity onPress={onItemAdded} style={{paddingTop: 4}}>
+        <TouchableOpacity onPress={onItemAdded}>
           <Icon name="send" size={24} color="blue"/>
         </TouchableOpacity>
       </View>
-      <TouchableOpacity onPress={onReset} hitSlop={{
-        top: 8, bottom: 8
-      }} style={{
-        marginTop: 4,
+      <View style={{
+        justifyContent: 'center',
+        alignItems: 'center'
       }}>
-        <Text>reset</Text>
-      </TouchableOpacity>
-      <View>
         {itemPools.length > 0 && !showWheelVisible && <ScrollView 
         showsVerticalScrollIndicator={false}
           style={{
             backgroundColor: "tomato",
             marginHorizontal: 8,
             borderRadius: 4,
+            width: "90%"
           }}>
           {
             itemPools.map((item, idx)  => {
@@ -200,7 +204,7 @@ const RandomScreen = () => {
         backgroundColor: "steelblue",
         alignItems: 'center',
         justifyContent: 'center',
-        marginHorizontal: 24,
+        marginHorizontal: 18,
         marginTop: 12,
         height: 40,
         borderRadius: 8,
@@ -210,7 +214,7 @@ const RandomScreen = () => {
           color: "white"
         }}>Shuffle</Text>
       </TouchableOpacity>
-      <WheelOfFortune options={wheelOptions} ref={ref => (childRef = ref)}/>
+      <WheelOfFortune options={wheelOptions} ref={ref => (childRef = ref)} />
       <PlainModalWIthCloseButton modalVisible={modalVisibility} toggleModal={toggleModal} data={modalData}/>
     </View>
   )

@@ -233,9 +233,9 @@ class WheelOfFortune extends Component {
             backgroundColor: this.props.options.backgroundColor
               ? this.props.options.backgroundColor
               : '#fff',
-            width: width - 20,
-            height: width - 20,
-            borderRadius: (width - 20) / 2,
+            width: (width/1.5) - 20,
+            height: (width/1.5) - 20,
+            borderRadius: ((width/1.5) - 20) / 2,
             borderWidth: this.props.options.borderWidth
               ? this.props.options.borderWidth
               : 2,
@@ -245,8 +245,8 @@ class WheelOfFortune extends Component {
             opacity: this.state.wheelOpacity,
           }}>
           <AnimatedSvg
-            width={this.state.gameScreen}
-            height={this.state.gameScreen}
+            width={(width/1.5) - 40}
+            height={(width/1.5) - 40}
             viewBox={`0 0 ${width} ${width}`}
             style={{
               transform: [{rotate: `-${this.angleOffset}deg`}],
@@ -256,26 +256,10 @@ class WheelOfFortune extends Component {
               {this._wheelPaths.map((arc, i) => {
                 const [x, y] = arc.centroid;
                 console.log(x.toFixed(0),y.toFixed(0))
-                // const number = i.toString();
                 const number = arc.value.toString();
-                // console.log(arc, i, '--ini apanya ya ?')
-                // console.log('----',(i * this.oneTurn) / this.numberOfSegments +this.angleOffset,'------ ya iniii')
-                // console.log('----', i, this.oneTurn, this.numberOfSegments ,this.angleOffset ,'------ ya iniii')
                 return (
                   <G key={`arc-${i}`} style={{transform: [{rotate: '90deg'}]}} transform={[{rotate: '90deg'}]}>
                     <Path d={arc.path} strokeWidth={2} fill={arc.color} />
-                    {/* <G
-                      zIndex={20}
-                      // rotation={
-                        // (i * this.oneTurn) / this.numberOfSegments +
-                        // this.angleOffset
-                        // 20 + (40*i)
-                        // 20
-                      // }
-                      style={{transform: [{rotate: '90deg'}]}}
-                      // transform={[{ rotate: '180deg' }]}
-                      origin={`${0}, ${0}`}>
-                    </G> */}
                       {this._textRender2(x, y, number, i)}
                   </G>
                 );
@@ -288,10 +272,7 @@ class WheelOfFortune extends Component {
   };
 
   _renderKnob = () => {
-    const knobSize = this.props.options.knobSize
-      ? this.props.options.knobSize
-      : 20;
-    // [0, this.numberOfSegments]
+    const knobSize = 30;
     const YOLO = Animated.modulo(
       Animated.divide(
         Animated.modulo(
@@ -307,7 +288,7 @@ class WheelOfFortune extends Component {
       <Animated.View
         style={{
           width: knobSize,
-          height: knobSize * 2,
+          height: knobSize,
           justifyContent: 'flex-end',
           zIndex: 1,
           opacity: this.state.wheelOpacity,
