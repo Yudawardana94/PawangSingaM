@@ -14,13 +14,14 @@ export default function DetailRestaurantScreen(props) {
   },[])
 
   const onbackPressed = () => {
-    console.log("onbackPressed")
     props.navigation.goBack()
   }
 
   const onSocmedPressed = () => {
     console.log("onSocmedPressed")
   }
+  
+  const onOpenMaps = () => console.log("oepn maps")
 
   return (
     <View>
@@ -44,80 +45,17 @@ export default function DetailRestaurantScreen(props) {
             }}
             resizeMode={FastImage.resizeMode.cover}
         />
-        <View style={{backgroundColor: "black", position:'absolute', top: 0, zIndex: 20, width, height: 250, opacity: 0.5}}/>
-        <Text style={{
-          position: 'absolute',
-          top: 220,
-          left: 12,
-          zIndex: 30,
-          fontWeight: "bold",
-          color: "white",
-          fontSize: 18,
-          textTransform: 'capitalize'
-        }}>{detailData.Name}</Text>
-        {/* <Text>{JSON.stringify(Object.keys(detailData.SocialMedia))}</Text> */}
-        <View style={{marginTop: 12, padding: 8, backgroundColor: "aquamarine", flex: 1}}>
-          <View style={{
-            position: 'absolute', 
-            right: 10,
-            top: -20, 
-            zIndex: 19, 
-            backgroundColor: 'black', 
-            width: 50, 
-            alignItems: 'center', 
-            justifyContent: 'center', 
-            padding: 8, 
-            borderRadius: 50,
-            opacity: 1,
-          }}>
+        <View style={styles.fakeImage}/>
+        <Text style={styles.nameTitleStyle}>{detailData?.Name}</Text>
+        <View style={[styles.keyBox, styles.shadowProp]} onPress={onOpenMaps}>
+          <View style={styles.floatingMapButton}>
             <Icon name={"map"} size={30} color={"white"}/>
           </View>
-          <Text>Address</Text>
+          <Text style={styles.title}>Address</Text>
           <Text>{detailData?.Address}</Text>
         </View>
-        <View style={{marginTop: 12, padding: 8, backgroundColor: "teal", flex: 1}}>
-          <Text>SocialMedia</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Pressable style={{
-              backgroundColor: "beige",
-              width: 50,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 4,
-              marginTop: 8,
-              marginRight: 8,
-            }} onPress={onSocmedPressed}>
-              <Icon name={"logo-instagram"} size={30} color={"orange"}/>
-            </Pressable>
-            <Pressable style={{
-              backgroundColor: "beige",
-              width: 50,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 4,
-              marginTop: 8,
-              marginRight: 8,
-            }} onPress={onSocmedPressed}>
-              <Icon name={"logo-facebook"} size={30} color={"orange"}/>
-            </Pressable>
-            <Pressable style={{
-              backgroundColor: "beige",
-              width: 50,
-              height: 50,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: 4,
-              marginTop: 8,
-              marginRight: 8,
-            }} onPress={onSocmedPressed}>
-              <Icon name={"logo-twitter"} size={30} color={"orange"}/>
-            </Pressable>
-          </View>
-        </View>
-        <View style={{marginTop: 12, padding: 8, backgroundColor: "teal", flex: 1}}>
-          <Text>Type</Text>
+        <View style={[styles.keyBox, styles.shadowProp]}>
+          <Text style={styles.title}>Type</Text>
           <View style={{
             flexDirection: 'row'
           }}>
@@ -141,21 +79,89 @@ export default function DetailRestaurantScreen(props) {
             }
           </View>
         </View>
-        <View style={{marginTop: 12, padding: 8, backgroundColor: "beige", flex: 1}}>
-          <Text>Notes</Text>
+        <View style={[styles.keyBox, styles.shadowProp]}>
+          <Text style={styles.title}>Notes</Text>
           <Text>{JSON.stringify(detailData?.Notes)}</Text>
         </View>
-        <View style={{marginTop: 12, padding: 8, backgroundColor: "aquamarine", flex: 1}}>
-          <Text>Review</Text>
+        <View style={[styles.keyBox, styles.shadowProp]}>
+          <Text style={styles.title}>Review</Text>
           <Text>{JSON.stringify(detailData?.Reviews)}</Text>
         </View>
-        <View style={{marginTop: 12, padding: 8, backgroundColor: "tomato", flex: 1}}>
-          <Text>Menu</Text>
+        <View style={[styles.keyBox, styles.shadowProp]}>
+          <Text style={styles.title}>Menu</Text>
           <Text>{JSON.stringify(detailData?.Menu)}</Text>
+        </View>
+        <View style={[styles.keyBox, styles.shadowProp]}>
+          <Text style={styles.title}>SocialMedia</Text>
+          <View style={{flexDirection: 'row'}}>
+            <Pressable style={styles.socialMediaBox} onPress={onSocmedPressed}>
+              <Icon name={"logo-instagram"} size={20} color={"orange"}/>
+            </Pressable>
+            <Pressable style={styles.socialMediaBox} onPress={onSocmedPressed}>
+              <Icon name={"logo-facebook"} size={20} color={"orange"}/>
+            </Pressable>
+            <Pressable style={styles.socialMediaBox} onPress={onSocmedPressed}>
+              <Icon name={"logo-twitter"} size={20} color={"orange"}/>
+            </Pressable>
+          </View>
         </View>
       </ScrollView>
     </View>
   )
 }
 
-const styles = StyleSheet.create({})
+const styles = StyleSheet.create({
+  fakeImage: {backgroundColor: "purple", position:'absolute', top: 0, zIndex: 20, width, height: 250, opacity: 0.5},
+  keyBox: {
+    marginTop: 12, 
+    padding: 8, 
+    backgroundColor: "white", 
+    flex: 1,
+  },
+  shadowProp: {
+    shadowColor: '#171717',
+    shadowOffset: {width: -2, height: 4},
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+  },
+  floatingMapButton: {
+    position: 'absolute', 
+    right: 10,
+    top: -40, 
+    zIndex: 19,
+    backgroundColor: 'black', 
+    width: 50, 
+    height: 50,
+    alignItems: 'center', 
+    justifyContent: 'center', 
+    padding: 8, 
+    borderRadius: 50,
+  },
+  nameTitleStyle: {
+    position: 'absolute',
+    top: 220,
+    left: 12,
+    zIndex: 30,
+    fontWeight: "bold",
+    color: "purple",
+    fontSize: 18,
+    textTransform: 'capitalize'
+  },
+  title: {
+    zIndex: 30,
+    fontWeight: "bold",
+    color: "black",
+    fontSize: 18,
+    textTransform: 'capitalize'
+  },
+  socialMediaBox: {
+    backgroundColor: "beige",
+    width: 35,
+    height: 35,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 4,
+    marginTop: 8,
+    marginRight: 8,
+  }
+})
