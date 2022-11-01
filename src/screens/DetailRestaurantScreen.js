@@ -1,58 +1,73 @@
-import React, {useEffect, useState} from 'react'
-import { StyleSheet, Text, ScrollView, View, Dimensions } from 'react-native'
+import React, { useEffect, useState } from 'react'
+import { StyleSheet, Text, ScrollView, View, Dimensions, TouchableOpacity } from 'react-native'
 import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/Ionicons'
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable'
 
-const {width} = Dimensions.get('screen')
+const { width } = Dimensions.get('screen')
 
 export default function DetailRestaurantScreen(props) {
+  const socialMediaList = ["instagram", "facebook", "twitter"]
   const [detailData, setData] = useState(null)
 
   useEffect(() => {
-    if(props?.route?.params) setData(props.route.params)
-  },[])
+    if (props?.route?.params) setData(props.route.params)
+  }, [])
 
-  const onbackPressed = () => {
-    props.navigation.goBack()
+  const onBackPressed = () => props.navigation.goBack()
+
+  const onSocmedPressed = (socmed) => {
+    console.log("onSocmedPressed" + socmed)
   }
 
-  const onSocmedPressed = () => {
-    console.log("onSocmedPressed")
+  const onMapsOpen = () => {
+    console.log("open maps")
   }
-  
-  const onOpenMaps = () => console.log("oepn maps")
 
+  const onNavigate = (destination) => {
+    console.log('masuk sinii', destination)
+    props.navigation.navigate(destination)
+  }
+
+  if (!detailData) {
+    return (
+      <View>
+        <Text>No data...</Text>
+      </View>
+    )
+  }
+  const BackButton = () => {
+    return (
+      <Pressable onPress={onBackPressed} style={styles.backButton}>
+        <Icon name={"arrow-back"} size={30} color={"white"} />
+      </Pressable>
+    )
+  }
   return (
     <View>
-      <Pressable onPress={onbackPressed} style={{
-        position: 'absolute',
-        top: 48,
-        left: 16,
-        zIndex: 99
-      }}>
-        <Icon name={"arrow-back"} size={30} color={"white"}/>
-      </Pressable>
+      <BackButton />
       <ScrollView>
         <FastImage
-            style={{ 
-              width: width, 
-              height: 250,
-            }}
-            source={{
-                uri: detailData?.Photos[0],
-                priority: FastImage.priority.normal,
-            }}
-            resizeMode={FastImage.resizeMode.cover}
+          style={{
+            width: width,
+            height: 250,
+          }}
+          source={{
+            uri: detailData?.Photos[0],
+            priority: FastImage.priority.normal,
+          }}
+          resizeMode={FastImage.resizeMode.cover}
         />
-        <View style={styles.fakeImage}/>
+        <View style={styles.fakeImage} />
         <Text style={styles.nameTitleStyle}>{detailData?.Name}</Text>
-        <View style={[styles.keyBox, styles.shadowProp]} onPress={onOpenMaps}>
-          <View style={styles.floatingMapButton}>
-            <Icon name={"map"} size={30} color={"white"}/>
+        <View style={[styles.keyBox, styles.shadowProp, styles.addressBox]}>
+          <View style={styles.addressDetail}>
+            <Text style={styles.title}>Address</Text>
+            <Text style={styles.addressText}>{detailData?.Address}</Text>
           </View>
-          <Text style={styles.title}>Address</Text>
-          <Text>{detailData?.Address}</Text>
+          <Pressable style={styles.floatingMapButton} onPress={onMapsOpen}>
+            <Icon name={"map"} size={30} color={"white"} />
+          </Pressable>
         </View>
         <View style={[styles.keyBox, styles.shadowProp]}>
           <Text style={styles.title}>Type</Text>
@@ -60,19 +75,10 @@ export default function DetailRestaurantScreen(props) {
             flexDirection: 'row'
           }}>
             {
-              ["Caffee",...detailData?.Type].map(type => {
+              detailData?.Type.map(type => {
                 return (
-                  <View style={{
-                    backgroundColor: "crimson",
-                    padding: 4,
-                    paddingHorizontal: 8,
-                    marginRight: 6,
-                    borderRadius: 4,
-                  }}>
-                    <Text style={{
-                      color: "white",
-                      textTransform: "capitalize"
-                    }}>{type}</Text>
+                  <View style={styles.typeWrapper}>
+                    <Text style={styles.typeText}>{type}</Text>
                   </View>
                 )
               })
@@ -81,61 +87,46 @@ export default function DetailRestaurantScreen(props) {
         </View>
         <View style={[styles.keyBox, styles.shadowProp]}>
           <Text style={styles.title}>Notes</Text>
-          <Text>{JSON.stringify(detailData?.Notes)}</Text>
+          <Text>{detailData?.Notes}</Text>
         </View>
-        <View style={[styles.keyBox, styles.shadowProp]}>
+        <TouchableOpacity style={[styles.keyBox, styles.shadowProp]} onPress={() => onNavigate("reviews")}>
           <Text style={styles.title}>Review</Text>
-          <Text>{JSON.stringify(detailData?.Reviews)}</Text>
-        </View>
+          <Text>{detailData?.Reviews}</Text>
+        </TouchableOpacity>
         <View style={[styles.keyBox, styles.shadowProp]}>
           <Text style={styles.title}>Menu</Text>
-          <Text>{JSON.stringify(detailData?.Menu)}</Text>
+          <Text>{detailData?.Menu}</Text>
         </View>
         <View style={[styles.keyBox, styles.shadowProp]}>
           <Text style={styles.title}>SocialMedia</Text>
-          <View style={{flexDirection: 'row'}}>
-            <Pressable style={styles.socialMediaBox} onPress={onSocmedPressed}>
-              <Icon name={"logo-instagram"} size={20} color={"orange"}/>
-            </Pressable>
-            <Pressable style={styles.socialMediaBox} onPress={onSocmedPressed}>
-              <Icon name={"logo-facebook"} size={20} color={"orange"}/>
-            </Pressable>
-            <Pressable style={styles.socialMediaBox} onPress={onSocmedPressed}>
-              <Icon name={"logo-twitter"} size={20} color={"orange"}/>
-            </Pressable>
+          <View style={{ flexDirection: 'row' }}>
+            {
+              socialMediaList.map(socmed => {
+                return <Pressable style={styles.socialMediaBox} onPress={() => onSocmedPressed(socmed)}>
+                  <Icon name={`logo-${socmed}`} size={20} color={"orange"} />
+                </Pressable>
+              })
+            }
           </View>
         </View>
-      </ScrollView>
-    </View>
+      </ScrollView >
+    </View >
   )
 }
 
 const styles = StyleSheet.create({
-  fakeImage: {backgroundColor: "purple", position:'absolute', top: 0, zIndex: 20, width, height: 250, opacity: 0.5},
+  fakeImage: { backgroundColor: "purple", position: 'absolute', top: 0, zIndex: 20, width, height: 250, opacity: 0.5 },
   keyBox: {
-    marginTop: 12, 
-    padding: 8, 
-    backgroundColor: "white", 
+    marginTop: 12,
+    padding: 8,
+    backgroundColor: "white",
     flex: 1,
   },
   shadowProp: {
     shadowColor: '#171717',
-    shadowOffset: {width: -2, height: 4},
+    shadowOffset: { width: -2, height: 4 },
     shadowOpacity: 0.1,
     shadowRadius: 3,
-  },
-  floatingMapButton: {
-    position: 'absolute', 
-    right: 10,
-    top: -40, 
-    zIndex: 19,
-    backgroundColor: 'black', 
-    width: 50, 
-    height: 50,
-    alignItems: 'center', 
-    justifyContent: 'center', 
-    padding: 8, 
-    borderRadius: 50,
   },
   nameTitleStyle: {
     position: 'absolute',
@@ -152,8 +143,50 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "black",
     fontSize: 18,
-    textTransform: 'capitalize'
+    textTransform: 'capitalize',
+    marginBottom: 4,
   },
+
+  // Address Section
+  addressBox: {
+    flexDirection: 'row',
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  addressDetail: {
+    flex: 1,
+  },
+  addressText: {
+    flexWrap: 'wrap',
+    fontSize: 12,
+  },
+  floatingMapButton: {
+    zIndex: 19,
+    width: 50,
+    height: 50,
+    backgroundColor: 'black',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderRadius: 50,
+    marginHorizontal: 4
+  },
+
+  // Type Detail Section
+  typeWrapper: {
+    backgroundColor: "violet",
+    padding: 4,
+    paddingHorizontal: 8,
+    marginRight: 6,
+    borderRadius: 4,
+  },
+  typeText: {
+    color: "white",
+    textTransform: "capitalize",
+    fontSize: 12,
+    fontWeight: "600"
+  },
+
   socialMediaBox: {
     backgroundColor: "beige",
     width: 35,
@@ -163,5 +196,11 @@ const styles = StyleSheet.create({
     borderRadius: 4,
     marginTop: 8,
     marginRight: 8,
+  },
+  backButton: {
+    position: 'absolute',
+    top: 48,
+    left: 16,
+    zIndex: 99
   }
 })

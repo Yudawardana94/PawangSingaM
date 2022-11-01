@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   Image,
   StyleSheet,
@@ -10,12 +10,14 @@ import {
   Touchable,
   Switch,
 } from 'react-native';
-import {connect} from 'react-redux';
+import { connect } from 'react-redux';
 import FastImage from 'react-native-fast-image'
 import Icon from 'react-native-vector-icons/FontAwesome'
 
-import {colors} from '../config/globalValue'
-import {getRestaurants, getRandom} from '../services/RestaurantService'
+import { colors } from '../config/globalValue'
+import { getRestaurants, getRandom } from '../services/RestaurantService'
+import Restaurants from '../components/Lists/RestaurantList'
+import RecomendationCard from '../components/Cards/RecomendationCard'
 
 
 const Home = props => {
@@ -36,7 +38,7 @@ const Home = props => {
   useEffect(() => {
     fetchData();
   }, []);
-  
+
   // FUNCTION SECTION
 
   const fetchData = async () => {
@@ -57,7 +59,7 @@ const Home = props => {
   // RENDER SECTIONS
   // TODO: SEPARATE THIS RENDER SECTION TO SMALLER COMPONENT
 
-  const renderHero = () => {
+  const HeroSection = () => {
     return (
       <View style={styles.heroHeader}>
         {homeText.hero.map((text, idx) => {
@@ -73,7 +75,7 @@ const Home = props => {
       </View>
     );
   };
-  const renderHeader = () => {
+  const HeaderSection = () => {
     return (
       <View style={styles.homeHeader}>
         <Text style={styles.textTitle}>{homeText.title}</Text>
@@ -81,43 +83,35 @@ const Home = props => {
       </View>
     );
   };
-  const renderContent = () => {
+  const MainContentPage = () => {
     return (
       <View>
-        {/* {renderNewContent()} */}
-        {renderMenu()}
-        {renderMyWishlist()}
-        {randomRes && renderRecomended()}
-        {/* {renderUserFavourite()} */}
-        {/* {resData && renderRestaurant()} */}
+        <MainMenu />
+        {/* {<MyWishlist />} */}
+        {randomRes && <RecomendationCard data={randomRes} navigation={props.navigation} />}
+        {/* {<Favourite />} */}
+        {resData && <Restaurants data={resData} navigation={props.navigation} />}
       </View>
     );
   };
-  const renderNewContent = () => {
-    return (
-      <View style={styles.newContent}>
-        <Text>Newly added</Text>
-      </View>
-    );
-  };
-  const renderMenu = () => {
+  const MainMenu = () => {
     const menu = [{
       title: "Random",
       screenName: "Random",
       icon: "random",
       screenProps: {},
 
-    },{
+    }, {
       title: "Restaurants",
       screenName: "Restaurants",
       icon: "building",
       screenProps: {}
-    },{
+    }, {
       title: "Wishlist",
       screenName: "Wishlist",
       icon: "heart",
       screenProps: {}
-    },{
+    }, {
       title: "Search",
       screenName: "Search",
       icon: "search",
@@ -127,28 +121,29 @@ const Home = props => {
       flexDirection: 'row',
       marginTop: 12,
       alignItems: 'center',
-      justifyContent: 'center'
+      justifyContent: 'center',
+      zIndex: 3
     }}>
       {
         menu.map(menu => {
           return <Pressable style={{
             marginRight: 8,
             borderRadius: 6,
-            padding: 6, 
+            padding: 6,
             width: "20%",
             alignItems: 'center'
-          }} 
-          onPress={() => onNavigateScreen(menu.screenName, menu.screenProps)} 
-          key={Math.random()}
-          hitSlop={{
-            top: 8,
-            bottom: 8,
-            left: 8,
-            right: 8
-          }}>
+          }}
+            onPress={() => onNavigateScreen(menu.screenName, menu.screenProps)}
+            key={Math.random()}
+            hitSlop={{
+              top: 8,
+              bottom: 8,
+              left: 8,
+              right: 8
+            }}>
             <Icon name={menu.icon} size={30} style={{
               marginBottom: 8,
-            }}/>
+            }} />
             <Text style={{
               textAlign: 'center',
               flexGrow: 1,
@@ -159,7 +154,7 @@ const Home = props => {
       }
     </View>
   }
-  const renderMyWishlist = () => {
+  const MyWishlist = () => {
     return (
       <View style={{
         // flex: 1,
@@ -175,7 +170,7 @@ const Home = props => {
         }}>
           {
             resData?.map(wl => {
-              return <Pressable 
+              return <Pressable
                 style={{
                   backgroundColor: colors.card,
                   marginRight: 8,
@@ -184,24 +179,24 @@ const Home = props => {
                 }}
                 key={Math.random()}
                 onPress={() => {
-                  console.log({...wl, Photos: [...wl.Photos, defaultImage]})
+                  console.log({ ...wl, Photos: [...wl.Photos, defaultImage] })
                   // props.navigation.navigate("DetailRestaurant", wl) // this is the main used data
-                  props.navigation.navigate("DetailRestaurant", {...wl, Photos: [...wl.Photos, defaultImage]}) //this is customized data
+                  props.navigation.navigate("DetailRestaurant", { ...wl, Photos: [...wl.Photos, defaultImage] }) //this is customized data
                 }}
               >
                 <FastImage
-                    style={{ 
-                      width: 125, 
-                      height: 75, 
-                      borderTopLeftRadius: 4,
-                      borderTopRightRadius: 4, 
-                      justifyContent: 'flex-end',
-                    }}
-                    source={{
-                        uri: defaultImage,
-                        priority: FastImage.priority.normal,
-                    }}
-                    resizeMode={FastImage.resizeMode.cover}
+                  style={{
+                    width: 125,
+                    height: 75,
+                    borderTopLeftRadius: 4,
+                    borderTopRightRadius: 4,
+                    justifyContent: 'flex-end',
+                  }}
+                  source={{
+                    uri: defaultImage,
+                    priority: FastImage.priority.normal,
+                  }}
+                  resizeMode={FastImage.resizeMode.cover}
                 />
                 <Text style={{
                   padding: 4,
@@ -216,84 +211,21 @@ const Home = props => {
       </View>
     )
   }
-  const renderRecomended = () => {
-    return (
-      <Pressable style={styles.recommended} onPress={() => onNavigateScreen('DetailRestaurant', randomRes)}>
-        <Text style={styles.recTitle}>Today's recommendation</Text>
-        <View style={styles.recContentWrapper}>
-          <View style={styles.reccomendationImage}/>
-          <View style={styles.recContentText}>
-            <Text>{randomRes?.Name}</Text>
-            <View style={styles.typeWrapper}>
-              {
-                [randomRes?.Type, "apakah", "semua","telah",'berakhir','sudahhh','dan','membuatku','menjadi'].map((type, idx) => {
-                  return idx <= 4 ? <View style={styles.randomResType} key={Math.random()}>
-                  <Text style={{
-                    fontSize: 12,
-                    textTransform: 'capitalize'
-                  }}>{type}</Text>
-                </View> : null
-                })
-              }
-            </View>
-          </View>
-          <Pressable 
-            onPress={() => setWL(!isWL)}  // #TODO: ekstract to external function
-            style={{
-              alignSelf: 'flex-start',
-              marginTop: 6,
-              marginRight: 8,
-            }}
-            hitSlop={{
-              top: 16,
-              bottom: 16,
-              right: 8,
-              left: 20,
-            }}
-            >
-            <Icon name={isWL ? "bookmark" : "bookmark-o"} size={18}/>
-          </Pressable>
-        </View>
-      </Pressable>
-    );
-  };
-  const renderUserFavourite = () => {
+  const Favourite = () => {
     return (
       <View style={styles.userFavourite}>
         <Text>Users choice</Text>
       </View>
     );
   };
-  const renderRestaurant = () => {
-    return (
-      <View>
-        {
-          resData?.map(el => {
-            return (
-              <View style={{
-                  marginVertical: 8,
-                  backgroundColor: "white",
-                  padding: 4
-                }} 
-                key={el._id}
-              >
-                <Text>{el.Name}</Text>
-                <Text>{el.Address}</Text>
-              </View>
-            )
-          })
-        }
-      </View>
-    )
-  }
 
   return (
     <View style={styles.container}>
-      <SafeAreaView forceInset={{top: 'always'}}/>
-      <ScrollView>
-        {renderHeader()}
-        {/* {renderHero()} */}
-        {renderContent()}
+      <SafeAreaView forceInset={{ top: 'always' }} />
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <HeaderSection />
+        {/* <HeroSection /> */}
+        <MainContentPage />
       </ScrollView>
     </View>
   );

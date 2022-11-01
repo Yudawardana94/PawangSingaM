@@ -1,5 +1,5 @@
 import axios from 'axios'
-import {getBaseUrl} from '../config/api'
+import { getBaseUrl } from '../config/api'
 
 export const getRestaurants = async () => {
     try {
